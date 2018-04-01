@@ -38,7 +38,7 @@ npm start
 
 ## Admin Lookup
 
-Soverign entities on Earth cannot stake claim to Mars, so admin lookup is not
+Sovereign entities on Earth cannot stake claim to Mars, so admin lookup is not
 relevant. However, records suggest that [Mark Watney](https://en.wikipedia.org/wiki/The_Martian_(film)) has established a
 de-facto claim to much of Mars, which this importer does not yet reflect.
 
