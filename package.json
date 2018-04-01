@@ -29,7 +29,6 @@
     "deep-diff": "^0.3.3",
     "event-stream": "^3.3.2",
     "jshint": "^2.9.4",
-    "precommit-hook": "3.0.0",
     "proxyquire": "^1.7.10",
     "semantic-release": "^8.0.0",
     "tap-spec": "4.1.1",
@@ -45,7 +44,7 @@
     "functional": "NODE_ENV=test node test/functional.js | tap-spec",
     "lint": "jshint .",
     "validate": "npm ls",
-    "travis": "npm run test && npm run functional",
+    "travis": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "start": "node --max_old_space_size=4096 import.js"
   },
@@ -62,11 +61,5 @@
   "bugs": {
     "url": "https://github.com/pelias/mars-importer/issues"
   },
-  "homepage": "https://github.com/pelias/mars-importer",
-  "pre-commit": [
-    "lint",
-    "validate",
-    "test",
-    "check-dependencies"
-  ]
+  "homepage": "https://github.com/pelias/mars-importer"
 }
