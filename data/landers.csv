@@ -1,0 +1,16 @@
+name,LAT,LON,west,layer,source
+Mars 2,-45,47,313,lander,ussr
+Mars 3,-45,-158,158,lander,ussr
+Mars 6,-23.9,-29.42,29.42,lander,ussr
+Viking 1 lander,22.697,-48.222,48.222,lander,nasa
+Viking 2 lander,48.269,137.01,222.99,lander,nasa
+Mars Pathfinder Lander,19.33,-33.55,33.55,lander,nasa
+Sojouner Rover,19.33,-33.55,33.55,rover,nasa
+Mars Climate Orbiter,0,0,0,lander,nasa
+Mars Polar Lander & Deep Space 2,-76,165,195,lander,nasa
+Beagle 2,11.5265,-90.4295,90.4295,lander,esa
+Spirit rover (MER-A),14.5718,-175.4785,175.4785,rover,nasa
+Opportunity rover (MER-B),-1.9462,5.5266,354.4734,rover,nasa
+Phoenix Mars Lander,-68.15,-125.9,125.9,lander,nasa
+Mars Science Laboratory (Curiosity),-4.6,-137.2,137.2,lander,nasa
+Schiaparelli EDM lander,0.2,-2.5,,lander,esa-roscosmos
