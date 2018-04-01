@@ -3,6 +3,8 @@
 
 # Pelias Mars data importer
 
+Initial release date: April 1, 2018
+
 This importer is designed to bring data about places on Mars, yes - Mars the planet, into Pelias.
 
 ## Overview
