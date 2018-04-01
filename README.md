@@ -46,7 +46,9 @@ de-facto claim to much of Mars, which this importer does not yet reflect.
 
 This importer comes with pre-formatted data for Martian landers and Martian craters.
 The martian craters came from this [repository](https://github.com/openplanetary/op-geometrics/tree/master/jacobs_university_contribution) from the amazing [OpenPlanetaryMap](http://openplanetary.co/opm/#3/11.80/-45.04) project. That data originally came from the [Gazetteer of Planetary Nomenclature](https://planetarynames.wr.usgs.gov/AdvancedSearch).
-The lander data comes from [Wikipedia](https://en.wikipedia.org/wiki/List_of_artificial_objects_on_Mars)
+The lander data comes from [Wikipedia](https://en.wikipedia.org/wiki/List_of_artificial_objects_on_Mars).
+
+The data is included in this repository in the `data` directory.
 
 ## Configuration
 This importer can be configured in [pelias-config](https://github.com/pelias/config), in the `imports.mars`
@@ -74,8 +76,8 @@ hash. A sample configuration file might look like:
       "importVenues": false
     },
     "openaddresses": {
-      "datapath": "/mnt/data/mars/",
-      "files": [ "craters.csv, landers.csv" ]
+      "datapath": "/mnt/code/pelias/mars-importer/data/",
+      "files": []
     }
   }
 }
