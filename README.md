@@ -1,18 +1,18 @@
 >This repository is part of the [Pelias](https://github.com/pelias/pelias) project. Pelias is an
->open-source, open-data geocoder built by [Mapzen](https://www.mapzen.com/) that also powers
->[Mapzen Search](https://mapzen.com/projects/search). Our official user documentation is
->[here](https://mapzen.com/documentation/search/).
+>open-source, open-data geocoder.
 
-# Pelias OpenAddresses importer
+# Pelias Mars data importer
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/openaddresses.svg)](https://greenkeeper.io/)
-
-[![Build Status](https://travis-ci.org/pelias/openaddresses.svg?branch=master)](https://travis-ci.org/pelias/openaddresses)
+This importer is designed to bring data about places on Mars, yes - Mars the planet, into Pelias.
 
 ## Overview
 
-The OpenAddresses importer is used to process data from [OpenAddresses](http://openaddresses.io/)
-for import into the Pelias geocoder.
+This importer will process any CSV with the following headers:
+* name: for the name of the record
+* source: to override the datasource name for that record
+* layer: to give that record a layer such as crater, lander, sea
+* LAT: a latitude
+* LON: a longitude. Note: most Martian datsets use either an [East-positive or West-positive longitude](https://en.wikipedia.org/wiki/Longitude#Longitude_on_bodies_other_than_Earth), which has values ranging from 0-360, so this must be converted to the standard longitude ranging from 180W to 180E (-180 - +180) here on Earth.
 
 ## Requirements
 
@@ -20,19 +20,9 @@ Node.js 4 or higher is required.
 
 ## Installation
 ```bash
-git clone https://github.com/pelias/openaddresses
-cd openaddresses
+git clone https://github.com/pelias/mars-importer
+cd mars-importer
 npm install
-```
-
-## Data Download
-Use the `imports.openaddresses.files` configuration option to limit the download to just the OpenAddresses files of interest.
-Refer to the [OpenAddresses data listing]( http://results.openaddresses.io/?runs=all#runs) for file names.
-
-> see the 'Configuration' section below for a more detailed example of how to use `imports.openaddresses.files`
-
-```bash
-npm run download
 ```
 
 ## Usage
@@ -45,17 +35,13 @@ npm start
 ```
 
 ## Admin Lookup
-OpenAddresses records do not contain information about which city, state (or
-other region like province), or country that they belong to. Pelias has the
-ability to compute these values from [Who's on First](http://whosonfirst.mapzen.com/) data.
-For more info on how admin lookup works, see the documentation for
-[pelias/wof-admin-lookup](https://github.com/pelias/wof-admin-lookup). By default,
-adminLookup is enabled.  To disable, set `imports.adminLookup.enabled` to `false` in Pelias config.
 
-**Note:** Admin lookup requires loading around 5GB of data into memory.
+Soverign entities on Earth cannot stake claim to Mars, so admin lookup is not
+relevant. However, records suggest that [Mark Watney](https://en.wikipedia.org/wiki/The_Martian_(film)) has established a
+de-facto claim to much of Mars, which this importer does not yet reflect.
 
 ## Configuration
-This importer can be configured in [pelias-config](https://github.com/pelias/config), in the `imports.openaddresses`
+This importer can be configured in [pelias-config](https://github.com/pelias/config), in the `imports.mars`
 hash. A sample configuration file might look like:
 
 ```javascript
@@ -80,8 +66,8 @@ hash. A sample configuration file might look like:
       "importVenues": false
     },
     "openaddresses": {
-      "datapath": "/mnt/data/openaddresses/",
-      "files": [ "us/ny/city_of_new_york.csv" ]
+      "datapath": "/mnt/data/mars/",
+      "files": [ "craters.csv, landers.csv" ]
     }
   }
 }
@@ -94,6 +80,5 @@ The following configuration options are supported by this importer.
 
 | key | required | default | description |
 | --- | --- | --- | --- |
-| `datapath` | yes | | The absolute path of the directory containing OpenAddresses files. Must be specified if no directory is given as a command-line argument. |
-| `files` | no | | An array of the names of the files to download/import. If specified, *only* these files will be downloaded and imported, rather than *all* `.csv` files in the given directory. **If the array is empty, all files will be downloaded and imported.** Refer to the [OpenAddresses data listing]( http://results.openaddresses.io/?runs=all#runs) for file names.|
-| `deduplicate` | no | `false` | Boolean flag to enable deduplication (deprecated. See [pelias/address-deduplicator](https://github.com/pelias/address-deduplicator) for more info). |
+| `datapath` | yes | | The absolute path of the directory containing data files. Must be specified if no directory is given as a command-line argument. |
+| `files` | no | | An array of the names of the files to download/import. If specified, *only* these files will be imported, rather than *all* `.csv` files in the given directory. **If the array is empty, all files will be downloaded and imported.**
