@@ -7,6 +7,8 @@ Initial release date: April 1, 2018
 
 This importer is designed to bring data about places on Mars, yes - Mars the planet, into Pelias.
 
+See [geocodemars.com](https://geocodemars.com) for a live demo of Pelias using this data.
+
 ## Overview
 
 This importer will process any CSV with the following headers:
