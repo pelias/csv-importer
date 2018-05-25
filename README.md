@@ -77,7 +77,7 @@ hash. A sample configuration file might look like:
       "importPostalcodes": false,
       "importVenues": false
     },
-    "openaddresses": {
+    "mars": {
       "datapath": "/mnt/code/pelias/mars-importer/data/",
       "files": []
     }
