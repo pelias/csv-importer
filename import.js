@@ -6,7 +6,7 @@
 
 var peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
 
-var logger = require( 'pelias-logger' ).get( 'mars-importer' );
+var logger = require( 'pelias-logger' ).get( 'csv-importer' );
 
 var parameters = require( './lib/parameters' );
 var importPipeline = require( './lib/importPipeline' );

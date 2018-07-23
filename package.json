@@ -1,7 +1,7 @@
 {
-  "name": "pelias-mars-importer",
+  "name": "pelias-csv-importer",
   "version": "0.0.0-semantic-release",
-  "description": "Pelias import pipeline for data from the red planet",
+  "description": "Pelias import pipeline for data from CSV files",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -36,7 +36,6 @@
     "temp": "^0.8.3"
   },
   "scripts": {
-    "download": "node utils/download_data.js",
     "import": "npm start",
     "parallel": "./bin/parallel",
     "test": "NODE_ENV=test npm run units",
@@ -50,7 +49,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pelias/mars-importer.git"
+    "url": "https://github.com/pelias/csv-importer.git"
   },
   "keywords": [
     "Pelias",
@@ -59,7 +58,7 @@
   "author": "pelias",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pelias/mars-importer/issues"
+    "url": "https://github.com/pelias/csv-importer/issues"
   },
-  "homepage": "https://github.com/pelias/mars-importer"
+  "homepage": "https://github.com/pelias/csv-importer"
 }
