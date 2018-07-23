@@ -1,6 +1,6 @@
 {
   "name": "pelias-csv-importer",
-  "version": "0.0.0-semantic-release",
+  "version": "0.0.0-dev",
   "description": "Pelias import pipeline for data from CSV files",
   "engines": {
     "node": ">=6.0.0"
@@ -30,7 +30,7 @@
     "event-stream": "^3.3.2",
     "jshint": "^2.9.4",
     "proxyquire": "^1.7.10",
-    "semantic-release": "^8.0.0",
+    "semantic-release": "^15.1.4",
     "tap-spec": "4.1.1",
     "tape": "^4.5.0",
     "temp": "^0.8.3"
@@ -44,7 +44,6 @@
     "lint": "jshint .",
     "validate": "npm ls",
     "travis": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "start": "node --max_old_space_size=4096 import.js"
   },
   "repository": {
