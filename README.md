@@ -22,7 +22,7 @@ This importer will process any CSV with the following headers:
 
 ## Requirements
 
-Node.js 4 or higher is required.
+Node.js 6 or higher is required.
 
 ## Installation
 ```bash
