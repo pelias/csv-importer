@@ -15,5 +15,7 @@ ADD . ${WORKDIR}
 # install npm dependencies
 RUN npm install
 
+USER pelias
+
 # run tests
 RUN npm test
