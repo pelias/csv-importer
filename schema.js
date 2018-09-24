@@ -9,11 +9,11 @@ const Joi = require('joi');
 // adminLookup: boolean
 module.exports = Joi.object().keys({
   imports: Joi.object().keys({
-    openaddresses: Joi.object().keys({
+    csv: Joi.object().keys({
       files: Joi.array().items(Joi.string()),
       datapath: Joi.string(),
       deduplicate: Joi.boolean(),
       adminLookup: Joi.boolean()
     }).requiredKeys('datapath').unknown(false)
-  }).requiredKeys('openaddresses').unknown(true)
+  }).requiredKeys('csv').unknown(true)
 }).requiredKeys('imports').unknown(true);
