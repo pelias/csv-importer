@@ -33,26 +33,26 @@ tape('non-object imports should throw error', function(test) {
 
 });
 
-tape('missing imports.openaddresses should throw error', function(test) {
+tape('missing imports.csv should throw error', function(test) {
   const config = {
     imports: {
     }
   };
 
-  test.throws(validate.bind(null, config), /"openaddresses" is required/);
+  test.throws(validate.bind(null, config), /"csv" is required/);
   test.end();
 
 });
 
-tape('non-object imports.openaddresses should throw error', function(test) {
+tape('non-object imports.csv should throw error', function(test) {
   [null, 17, 'string', [], true].forEach((value) => {
     const config = {
       imports: {
-        openaddresses: value
+        csv: value
       }
     };
 
-    test.throws(validate.bind(null, config), /"openaddresses" must be an object/);
+    test.throws(validate.bind(null, config), /"csv" must be an object/);
   });
 
   test.end();
@@ -62,7 +62,7 @@ tape('non-object imports.openaddresses should throw error', function(test) {
 tape( 'missing datapath should throw error', function(test) {
   const config = {
     imports: {
-      openaddresses: {}
+      csv: {}
     }
   };
 
@@ -75,7 +75,7 @@ tape( 'non-string datapath should throw error', function(test) {
   [null, 17, {}, [], false].forEach((value) => {
     const config = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: value
         }
       }
@@ -92,7 +92,7 @@ tape( 'non-array files should throw error', function(test) {
   [null, 17, {}, 'string', false].forEach((value) => {
     const config = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: 'this is the datapath',
           files: value
         }
@@ -109,7 +109,7 @@ tape( 'non-string elements in files array should throw error', function(test) {
   [null, 17, {}, [], false].forEach((value) => {
     const config = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: 'this is the datapath',
           files: [value]
         }
@@ -126,7 +126,7 @@ tape( 'non-boolean adminLookup should throw error', function(test) {
   [null, 17, {}, [], 'string'].forEach((value) => {
     const config = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: 'this is the datapath',
           adminLookup: value
         }
@@ -143,7 +143,7 @@ tape( 'non-boolean deduplicate should throw error', function(test) {
   [null, 17, {}, [], 'string'].forEach((value) => {
     const config = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: 'this is the datapath',
           deduplicate: value
         }
@@ -159,7 +159,7 @@ tape( 'non-boolean deduplicate should throw error', function(test) {
 tape( 'unknown config fields should throw error', function(test) {
   const config = {
     imports: {
-      openaddresses: {
+      csv: {
         datapath: 'this is the datapath',
         unknown: 'value'
       }
@@ -174,7 +174,7 @@ tape( 'unknown config fields should throw error', function(test) {
 tape( 'configuration with only datapath should not throw error', function(test) {
   const config = {
     imports: {
-      openaddresses: {
+      csv: {
         datapath: 'this is the datapath'
       }
     }
@@ -188,7 +188,7 @@ tape( 'configuration with only datapath should not throw error', function(test) 
 tape( 'valid configuration should not throw error', function(test) {
   const config = {
     imports: {
-      openaddresses: {
+      csv: {
         datapath: 'this is the datapath',
         deduplicate: false,
         adminLookup: false,
@@ -205,7 +205,7 @@ tape( 'valid configuration should not throw error', function(test) {
 tape( 'unknown children of imports should not throw error', function(test) {
   const config = {
     imports: {
-      openaddresses: {
+      csv: {
         datapath: 'this is the datapath',
         deduplicate: false,
         adminLookup: false,
@@ -223,7 +223,7 @@ tape( 'unknown children of imports should not throw error', function(test) {
 tape( 'unknown children of root should not throw error', function(test) {
   const config = {
     imports: {
-      openaddresses: {
+      csv: {
         datapath: 'this is the datapath',
         deduplicate: false,
         adminLookup: false,

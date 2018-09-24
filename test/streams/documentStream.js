@@ -45,22 +45,42 @@ tape( 'documentStream does not set zipcode if zipcode is emptystring', function(
   });
 });
 
-tape( 'documentStream creates id with filename-based prefix', function(test) {
+tape( 'documentStream accepts zipcode instead of POSTCODE', function(test) {
   const input = {
     NUMBER: '5',
     STREET: '101st Avenue',
     LAT: 5,
     LON: 6,
-    POSTCODE: ''
+    zipcode: '10010'
   };
-
   const stats = { badRecordCount: 0 };
   const documentStream = DocumentStream.create('prefix', stats);
 
   test_stream([input], documentStream, function(err, actual) {
     test.equal(actual.length, 1, 'the document should be pushed' );
     test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
-    test.equal(actual[0].getId(), 'prefix:0');
+    test.equal(actual[0].getAddress('zip'), '10010');
+    test.end();
+  });
+});
+
+tape('documentStream uses id value over hash if present', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    id: 'desired-id',
+    HASH: 'abcd'
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual[0].getId(), 'desired-id', 'id should be correct');
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
     test.end();
   });
 });
@@ -80,7 +100,51 @@ tape('documentStream uses HASH value if present', function(test) {
   test_stream([input], documentStream, function(err, actual) {
     test.equal(actual.length, 1, 'the document should be pushed' );
     test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
-    test.equal(actual[0].getId(), 'prefix:abcd');
+    test.end();
+  });
+});
+
+tape('documentStream uses layer value if present (over LAYER, layer_id, and LAYER_ID)', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer: 'desired-layer',
+    LAYER: 'wrong',
+    layer_id: 'wrong2',
+    LAYER_ID: 'wrong3'
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual[0].getLayer(), 'desired-layer', 'layer set correctly');
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream uses layer_id value if present', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer'
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual[0].getLayer(), 'desired-layer', 'layer set correctly');
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
     test.end();
   });
 });

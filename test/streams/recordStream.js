@@ -1,66 +1,115 @@
+var fs = require('fs');
+
 var tape = require( 'tape' );
+var temp = require( 'temp' ).track();
 var through = require( 'through2' );
 
 var peliasModel = require( 'pelias-model' );
 
 var recordStream = require( '../../lib/streams/recordStream' );
 
+// TODO: remove this when we remove support for Node.js 6
+function getValues(object) {
+  var keys = Object.keys(object);
+  var values = [];
+
+  for (var i = 0; i < keys.length; i++) {
+    values.push(object[keys[i]]);
+  }
+
+  return values;
+}
+
+/*
+ * Helper function to create and use a recordStream object and CSV input file for testing
+ */
+function testRecordStream(test, input, expected) {
+  temp.open('csv-importer-test', function(err, info) {
+    // generate a custom CSV and write it to a file
+    const header_row = Object.keys(input).join(',') + "\n";
+    const data_row = getValues(input) + "\n";
+    fs.writeSync(info.fd, header_row);
+    fs.writeSync(info.fd, data_row);
+
+    // close temporary file and create a test stream with it
+    fs.close(info.fd, function(err) {
+      const dataStream = recordStream.create([info.path]);
+      test.ok( dataStream.readable, 'Stream is readable.' );
+
+      var testStream = through.obj(function ( data, enc, next ){
+        //within this stream, test all the expected properties
+        test.equal(data.getName('default'), expected.name, 'Name matches');
+        test.equal(data.getSource(), expected.source, 'source matches');
+        test.equal(data.getLayer(), expected.layer, 'layer matches');
+
+        const centroid = data.getCentroid();
+        test.ok( expected.lon - centroid.lon < 1e-6, 'Longitude matches' );
+        test.ok( expected.lat - centroid.lat < 1e-6, 'Latitude matches' );
+
+        if (expected.street) {
+          test.equal(data.getAddress('street'), expected.street, 'Street matches');
+        }
+
+        if (expected.number) {
+          test.equal(data.getAddress('number'), expected.number, 'Housenumber matches');
+        }
+
+        next();
+      });
+
+      dataStream.pipe(testStream);
+    });
+
+  });
+}
+
 /**
- * Tests whether records read from `test/openaddresses_sample.csv` are created
- * into Document objects with expected values.
+ * Test the full recordStream pipeline from input CSV to output pelias-model
  */
 tape(
   'importPipelines.createRecordStream() creates Document objects with expected values.',
   function ( test ){
-    function createTestRec( lon, lat, name ){
-      return { lon: lon, lat: lat, name: name };
-    }
 
-    var expectedRecords = [
-      createTestRec( -118.0170157, 55.546026835788886, '23042 Twp Road 755 A' ),
-      createTestRec( -118.75318353, 55.14959214890181, '712046 Rge Road 34' ),
-      createTestRec( -118.8218384, 55.15506788763259, '712078 Rge Road 34' ),
-      createTestRec( -118.79719936, 55.153343057595535, '712068 Rge Road 34' ),
-      createTestRec( -118.66743097, 55.151807043809917, '712060 Rge Road 34' ),
-      createTestRec( -118.74783569, 55.155320792497442, '712082 Rge Road 35' ),
-      createTestRec( 1, 2, 'number Too Many Spaces' ),
-      createTestRec( 1, 2, 'trim Multiple Spaces' )
-    ];
-    test.plan( expectedRecords.length * 4 + 1);
+    // standard record
+    testRecordStream(test, { lat: 5, lon:3, name: 'foo' },
+      { name: 'foo', source: 'csv', lat: 5, lon: 3, layer: 'venue' });
 
-    var dataStream = recordStream.create(['test/openaddresses_sample.csv']);
-    test.ok( dataStream.readable, 'Stream is readable.' );
-    var testStream = through.obj(function ( data, enc, next ){
-      test.ok(
-        data instanceof peliasModel.Document, 'Data is a Document object.'
-      );
+    // spaces trimmed from name
+    testRecordStream(test, { lat: 5, lon:3, name: '    foo', source: 'bar' },
+      { name: 'foo', source: 'bar', lat: 5, lon: 3, layer: 'venue' });
 
-      var expected = expectedRecords.splice( 0, 1 )[ 0 ];
-      var centroid = data.getCentroid();
-      test.ok( expected.lon - centroid.lon < 1e-6, 'Longitude matches.' );
-      test.ok( expected.lat - centroid.lat < 1e-6, 'Latitude matches.' );
-      test.equal( data.getName( 'default' ), expected.name , 'Name matches.' );
-      next();
-    });
-    dataStream.pipe( testStream );
+    // LAT accepted
+    testRecordStream(test, { LAT: 5, lon:3, name: 'foo', source: 'bar' },
+      { name: 'foo', source: 'bar', lat: 5, lon: 3, layer: 'venue' });
+
+    // LON accepted
+    testRecordStream(test, { lat: 5, LON:3, name: 'foo', source: 'bar' },
+      { name: 'foo', source: 'bar', lat: 5, lon: 3, layer: 'venue' });
+
+    // layer is used over default
+    testRecordStream(test, { lat: 5, lon:3, name: 'foo', layer: 'custom-layer' },
+      { name: 'foo', source: 'csv', lat: 5, lon: 3, layer: 'custom-layer' });
+
+    // street only is ok
+    testRecordStream(test, { street: 'Main St', lat: 5, lon:3},
+      {street: 'Main St', source: 'csv', layer: 'venue', lat: 5, lon: 3, layer: 'venue' });
+
+    // street and housenumber is ok
+    testRecordStream(test, { number: 101, street: 'Main St', lat: 5, lon:3},
+      {number: '101', street: 'Main St', source: 'csv', layer: 'venue', lat: 5, lon: 3, layer: 'venue' });
+
+    // housenumber also accepted instead of "number"
+    testRecordStream(test, { housenumber: 101, street: 'Main St', lat: 5, lon:3},
+      {number: '101', street: 'Main St', source: 'csv', layer: 'venue', lat: 5, lon: 3, layer: 'venue' });
+
+    // all caps number accepted as housenumber (OpenAddresses style)
+    testRecordStream(test, { NUMBER: 101, street: 'Main St', lat: 5, lon:3},
+      {number: '101', street: 'Main St', source: 'csv', layer: 'venue', lat: 5, lon: 3, layer: 'venue' });
+
+    // the end
+    test.end();
   }
 );
-
-tape( 'Don\'t create records for invalid data.', function ( test ){
-  var dataStream = recordStream.create(['test/openaddresses_bad_data.csv']);
-
-  dataStream.pipe( through.obj(
-    function write( data, _, next ){
-      test.fail( 'Document was created from bad data: ' + JSON.stringify( data, undefined, 4 ) );
-      next();
-    },
-    function end( done ){
-      test.pass( 'No Documents were created from bad data.' );
-      test.end();
-      done();
-    }
-  ));
-});
 
 tape( 'getIdPrefix returns prefix based on OA directory structure', function( test ) {
   var filename = '/base/path/us/ca/san_francisco.csv';
