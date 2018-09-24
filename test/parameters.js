@@ -5,9 +5,6 @@ var proxyquire = require('proxyquire');
 
 var temp = require( 'temp' ).track();
 
-var parameters = require( '../lib/parameters' );
-
-
 // fake FS module that always says a file is present
 const fakeFsModule = {
   statSync: function() {
@@ -22,9 +19,25 @@ const fakeFsModule = {
   }
 };
 
+// fake pelias-config module that returns a blank config
+const fakePeliasConfig = {
+  generate: function() {
+    return {
+      imports: {}
+    }
+  }
+};
+
+var parameters = proxyquire( '../lib/parameters', {
+  'pelias-config': {},
+  fs: fakeFsModule
+});
+
+
 tape( 'interpretUserArgs() sets default parameter options', function ( test ){
   var parametersForThisTest = proxyquire( '../lib/parameters', {
-    fs: fakeFsModule
+    fs: fakeFsModule,
+    'pelias-config': fakePeliasConfig
   });
 
   const input = [ ]; // pass no input
@@ -41,35 +54,26 @@ tape( 'interpretUserArgs() sets default parameter options', function ( test ){
   test.end();
 });
 
-tape( 'interpretUserArgs() throws errors for invalid parameters', function (test){
-  var badArguments = [
-    [ 'not an arg', 'some dir' ],
-    [ '--deduplicate', 'not an arg', 'some dir' ],
-    [ '--deduplicate', 'not a dir' ],
-    [ '--deduplicate', 'package.json' ],
-  ];
-  badArguments.forEach( function execTestCase( testCase, ind ){
-    var errorObj = parameters.interpretUserArgs( testCase );
-    test.ok(
-      'exitCode' in errorObj &&  'errMessage' in errorObj,
-      'Invalid arguments yield an error object: ' + ind
-    );
-  });
-  test.end();
-});
-
 tape('interpretUserArgs returns dir from pelias config if set', function(test) {
   temp.mkdir('tmpdir2', function(err, temporary_dir) {
     var peliasConfig = {
-      imports: {
-        csv: {
-          datapath: temporary_dir
+      generate: function() {
+        return {
+          imports: {
+            csv: {
+              datapath: temporary_dir
+            }
+          }
         }
       }
     };
 
+    const parameters = proxyquire('../lib/parameters', {
+      'pelias-config': peliasConfig
+    });
+
     var input = [];
-    var result = parameters.interpretUserArgs(input, peliasConfig);
+    var result = parameters.interpretUserArgs(input);
 
     test.equal(result.dirPath, temporary_dir, 'path should be equal to path from config');
     test.end();
@@ -80,15 +84,23 @@ tape('interpretUserArgs returns normalized path from config', function(test) {
   temp.mkdir('tmpdir2', function(err, temporary_dir) {
     var input_dir = path.sep + '.' + temporary_dir;
     var peliasConfig = {
-      imports: {
-        csv: {
-          datapath: input_dir
+      generate: function() {
+        return {
+          imports: {
+            csv: {
+              datapath: input_dir
+            }
+          }
         }
       }
     };
 
+    const parameters = proxyquire('../lib/parameters', {
+      'pelias-config': peliasConfig
+    });
+
     var input = [];
-    var result = parameters.interpretUserArgs(input, peliasConfig);
+    var result = parameters.interpretUserArgs(input);
 
     var expected_dir = path.normalize(input_dir);
     test.equal(result.dirPath, expected_dir, 'path should be equal to path from config');
