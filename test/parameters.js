@@ -61,7 +61,7 @@ tape('interpretUserArgs returns dir from pelias config if no dir specified on co
   temp.mkdir('tmpdir2', function(err, temporary_dir) {
     var peliasConfig = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: temporary_dir
         }
       }
@@ -80,7 +80,7 @@ tape('interpretUserArgs returns normalized path from config', function(test) {
     var input_dir = path.sep + '.' + temporary_dir;
     var peliasConfig = {
       imports: {
-        openaddresses: {
+        csv: {
           datapath: input_dir
         }
       }
@@ -111,7 +111,7 @@ tape('getFileList returns all .csv path names when config has empty files list',
 
     var peliasConfig = {
       imports: {
-        openaddresses: {
+        csv: {
           files: []
         }
       }
@@ -147,7 +147,7 @@ tape('getFileList returns all .csv path names when config doesn\'t have files pr
 
     var peliasConfig = {
       imports: {
-        openaddresses: {
+        csv: {
         }
       }
     };
@@ -170,7 +170,7 @@ tape('getFileList returns fully qualified path names when config has a files lis
   temp.mkdir('multipleFiles', function(err, temporary_dir) {
     var peliasConfig = {
       imports: {
-        openaddresses: {
+        csv: {
           files: ['filea.csv', 'fileb.csv']
         }
       }
@@ -191,7 +191,7 @@ tape('getFileList returns fully qualified path names when config has a files lis
 tape('getFileList handles parallel builds', function(test) {
   var peliasConfig = {
     imports: {
-      openaddresses: {
+      csv: {
         files: ['filea.csv', 'fileb.csv', 'filec.csv']
       }
     }

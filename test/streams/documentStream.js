@@ -45,26 +45,6 @@ tape( 'documentStream does not set zipcode if zipcode is emptystring', function(
   });
 });
 
-tape( 'documentStream creates id with filename-based prefix', function(test) {
-  const input = {
-    NUMBER: '5',
-    STREET: '101st Avenue',
-    LAT: 5,
-    LON: 6,
-    POSTCODE: ''
-  };
-
-  const stats = { badRecordCount: 0 };
-  const documentStream = DocumentStream.create('prefix', stats);
-
-  test_stream([input], documentStream, function(err, actual) {
-    test.equal(actual.length, 1, 'the document should be pushed' );
-    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
-    test.equal(actual[0].getId(), 'prefix:0');
-    test.end();
-  });
-});
-
 tape('documentStream uses HASH value if present', function(test) {
   const input = {
     NUMBER: '5',
@@ -80,7 +60,6 @@ tape('documentStream uses HASH value if present', function(test) {
   test_stream([input], documentStream, function(err, actual) {
     test.equal(actual.length, 1, 'the document should be pushed' );
     test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
-    test.equal(actual[0].getId(), 'prefix:abcd');
     test.end();
   });
 });

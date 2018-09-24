@@ -7,7 +7,7 @@
 require( './schema' );
 require( './isValidCsvRecord' );
 require( './import');
-require( './importPipeline');
+//require( './importPipeline');
 require( './parameters' );
 require( './streams/cleanupStream' );
 require( './streams/deduplicatorStream');
