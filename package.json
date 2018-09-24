@@ -40,7 +40,6 @@
     "parallel": "./bin/parallel",
     "test": "NODE_ENV=test npm run units",
     "units": "node test/test.js | tap-spec",
-    "functional": "NODE_ENV=test node test/functional.js | tap-spec",
     "lint": "jshint .",
     "validate": "npm ls",
     "travis": "npm ls",
