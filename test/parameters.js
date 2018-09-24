@@ -1,22 +1,47 @@
 var tape = require( 'tape' );
 var path = require( 'path' );
 var fs = require('fs');
+var proxyquire = require('proxyquire');
 
 var temp = require( 'temp' ).track();
 
 var parameters = require( '../lib/parameters' );
 
-tape( 'interpretUserArgs() correctly handles arguments', function ( test ){
-  var testCase = [
-      [ 'test'  ],
-      { dirPath: 'test', 'parallel-count': undefined, 'parallel-id': undefined },
-  ];
 
-  test.deepEqual(
-    parameters.interpretUserArgs( testCase[ 0 ] ), testCase[ 1 ],
-    'Basic arguments case passes.'
-  );
+// fake FS module that always says a file is present
+const fakeFsModule = {
+  statSync: function() {
+    return {
+      isDirectory: function() {
+        return true
+      }
+    };
+  },
+  existsSync: function() {
+    return true;
+  }
+};
 
+tape( 'interpretUserArgs() sets default parameter options', function ( test ){
+  var parametersForThisTest = proxyquire( '../lib/parameters', {
+    fs: fakeFsModule
+  });
+
+  const input = [ ]; // pass no input
+
+  const expectedParamOutput = {
+    dirPath: '/mnt/data/csv', //default path expected
+    'parallel-count': undefined,
+    'parallel-id': undefined
+  };
+
+
+  const actual = parametersForThisTest.interpretUserArgs(input);
+  test.deepEqual(actual, expectedParamOutput, 'parameters should have their default values');
+  test.end();
+});
+
+tape( 'interpretUserArgs() throws errors for invalid parameters', function (test){
   var badArguments = [
     [ 'not an arg', 'some dir' ],
     [ '--deduplicate', 'not an arg', 'some dir' ],
@@ -33,31 +58,7 @@ tape( 'interpretUserArgs() correctly handles arguments', function ( test ){
   test.end();
 });
 
-tape('interpretUserArgs returns given path as dirPath', function(test) {
-  temp.mkdir('tmpdir', function(err, temporary_dir) {
-
-    var input = [temporary_dir];
-    var result = parameters.interpretUserArgs(input);
-
-    test.equal(result.dirPath, temporary_dir, 'path should be equal to specified path');
-    test.end();
-  });
-});
-
-tape('intepretUserArgs normalizes path given as parameter', function(test) {
-  temp.mkdir('tmpdir', function(err, temporary_dir) {
-    var input_dir = temporary_dir + path.sep + path.sep;
-
-    var input = [input_dir];
-    var result = parameters.interpretUserArgs(input);
-
-    var expected_dir = path.normalize(input_dir);
-    test.equal(result.dirPath, expected_dir, 'path should be equal to specified path');
-    test.end();
-  });
-});
-
-tape('interpretUserArgs returns dir from pelias config if no dir specified on command line', function(test) {
+tape('interpretUserArgs returns dir from pelias config if set', function(test) {
   temp.mkdir('tmpdir2', function(err, temporary_dir) {
     var peliasConfig = {
       imports: {
