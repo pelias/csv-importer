@@ -45,6 +45,25 @@ tape( 'documentStream does not set zipcode if zipcode is emptystring', function(
   });
 });
 
+tape( 'documentStream accepts zipcode instead of POSTCODE', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    zipcode: '10010'
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.equal(actual[0].getAddress('zip'), '10010');
+    test.end();
+  });
+});
+
 tape('documentStream uses HASH value if present', function(test) {
   const input = {
     NUMBER: '5',
