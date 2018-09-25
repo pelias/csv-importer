@@ -7,7 +7,7 @@
 
 **Note:** This repository is still a work in progress
 
-This importer is designed to bring data into Pelias from a properly formattted CSV file.
+This importer is designed to bring data into Pelias from a properly formatted CSV file.
 
 It's originally based off of the [OpenAddresses importer](https://github.com/pelias/openaddresses), which also uses a CSV format.
 
@@ -17,7 +17,7 @@ This importer will process any CSV, attempting to create a Pelias document for e
 
 In order to be useful, each row needs to define a latitude, a longitude, and either an address, name or both.
 
-This importer will accept any colum name as uppercase or lowercase. Lowercase has priority if both are present.
+This importer will accept any column name as uppercase or lowercase. Lowercase has priority if both are present.
 
 ### Latitude
 Latitude can come from a column called `lat`
@@ -29,8 +29,10 @@ Longitude can come from a column called `lon`
 A valid address consists of at least a street, and possibly a housenumber and postalcode.
 
 Valid column names for street are: `street`
+
 Valid column names for housenumber are: `housenumber`, `number`
-Valid column names for postalcod are: `postalcode`, `zipcode`
+
+Valid column names for postalcode are: `postalcode`, `zipcode`
 
 ## Name
 A name is a free-form string that represents the name of a record. It might be
