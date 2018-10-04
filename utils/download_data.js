@@ -38,6 +38,8 @@ if (!targetDir) {
 logger.info(`Attempting to download selected data files: ${files}`);
 
 
+fs.mkdirpSync(targetDir);
+
 async.eachLimit(files, 5, downloadStandard.bind(null, targetDir), function() {
   logger.info('all done');
 });
