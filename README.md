@@ -70,7 +70,9 @@ Valid column names for the source value are : `source`
 
 ## Requirements
 
-Node.js 6 or higher is required.
+Node.js is required.
+
+See [Pelias software requirements](https://github.com/pelias/documentation/blob/master/requirements.md) for supported versions.
 
 ## Installation
 ```bash
