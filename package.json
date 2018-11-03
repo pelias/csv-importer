@@ -59,5 +59,9 @@
   "bugs": {
     "url": "https://github.com/pelias/csv-importer/issues"
   },
-  "homepage": "https://github.com/pelias/csv-importer"
+  "homepage": "https://github.com/pelias/csv-importer",
+  "release": {
+    "branch": "master",
+    "success": []
+  }
 }
