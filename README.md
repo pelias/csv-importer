@@ -5,6 +5,8 @@
 
 # Pelias CSV Importer
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/csv-importer.svg)](https://greenkeeper.io/)
+
 **Note:** This repository is still a work in progress
 
 This importer is designed to bring data into Pelias from a properly formatted CSV file.
