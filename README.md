@@ -7,8 +7,6 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/pelias/csv-importer.svg)](https://greenkeeper.io/)
 
-**Note:** This repository is still a work in progress
-
 This importer is designed to bring data into Pelias from a properly formatted CSV file.
 
 It's originally based off of the [OpenAddresses importer](https://github.com/pelias/openaddresses), which also uses a CSV format.
@@ -129,5 +127,5 @@ The following configuration options are supported by this importer.
 
 | key | required | default | description |
 | --- | --- | --- | --- |
-| `datapath` | yes | | The absolute path of the directory containing data files. Must be specified if no directory is given as a command-line argument. |
-| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported, rather than *all* `.csv` files in the given directory.
+| `datapath` | yes | | The absolute path of the directory containing data files. |
+| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, *all* `.csv` files in the given directory will be imported.
