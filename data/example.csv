@@ -1,0 +1,4 @@
+id,source,layer,name,housenumber,street,postcode,lat,lon
+1,pelias,example_layer,Example Location,,,,5,5
+2,pelias,address,123 Main St,123,Main St,90210,6,7
+3,pelias,invalid,123 Main St,,,,,
