@@ -29,17 +29,14 @@ const files = config.get('imports.csv.download');
 
 if (!files) {
   logger.warn('No files to download, quitting');
-}
-
-if (!targetDir) {
+} else if (!targetDir) {
   logger.warn('Datapath for saving files not configured, quitting');
+} else {
+  logger.info(`Attempting to download selected data files: ${files}`);
+
+  fs.mkdirpSync(targetDir);
+
+  async.eachLimit(files, 5, downloadStandard.bind(null, targetDir), function() {
+    logger.info('all done');
+  });
 }
-
-logger.info(`Attempting to download selected data files: ${files}`);
-
-
-fs.mkdirpSync(targetDir);
-
-async.eachLimit(files, 5, downloadStandard.bind(null, targetDir), function() {
-  logger.info('all done');
-});
