@@ -26,6 +26,36 @@ tape( 'documentStream catches records with no street', function(test) {
   });
 });
 
+tape( 'documentStream catches records with no lat', function(test) {
+  const input = {
+    name: 'foo',
+    LON: 7
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 0, 'no documents should be pushed' );
+    test.equal(stats.badRecordCount, 1, 'bad record count updated');
+    test.end();
+  });
+});
+
+tape( 'documentStream catches records with no lon', function(test) {
+  const input = {
+    name: 'foo',
+    LAT: 7
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 0, 'no documents should be pushed' );
+    test.equal(stats.badRecordCount, 1, 'bad record count updated');
+    test.end();
+  });
+});
+
 tape( 'documentStream does not set zipcode if zipcode is emptystring', function(test) {
   const input = {
     NUMBER: '5',
