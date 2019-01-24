@@ -77,6 +77,47 @@ cause all but the most recent record to be overwritten.
 
 If an ID is not specified for a row in a CSV, the row number will be used.
 
+## Custom data
+
+Arbitrary custom data that does not fit into the standard Pelias schema can be stored for later retrieval under the `addendum` property.
+
+Currently, custom data is supported when encoded as any valid JSON object. In the future, support for adding individual values via CSV columns will be supported.
+
+Custom data entires are namespaced, so this importer supports any column starting with `addendum_json_`. The rest of the column name will determine the namespace.
+
+For example, to store a WikiData and Geonames concordance ID, the following CSV format might be used:
+
+id | name | source | layer | lat | lon | addendum_json_geonames | addendum_json_wikidata
+-- | -- | -- | -- | -- | -- | -- | --
+1 | test | custom | venue | 5 | 6 | "{ ""id"": 600 } | { ""id"": ""Q47"" }"
+
+The Pelias [API](https://github.com/pelias/api) will then return a `GeoJSON` `Feature` like the following:
+
+```
+{
+  "properties": {
+    "id": "1",
+    "gid": "custom:venue:1",
+    "layer": "venue",
+    "source": "custom",
+    "source_id": "1",
+    "name": "test",
+    "confidence": 1,
+    "match_type": "exact",
+    "accuracy": "centroid",
+    "label": "London, England, United Kingdom",
+    "addendum": {
+      "geonames": {
+        "id": 600
+      },
+      "wikidata": {
+        "id": "Q47"
+      }
+    }
+  }
+}
+```
+
 ## Requirements
 
 Node.js is required.
