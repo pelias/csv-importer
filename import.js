@@ -26,7 +26,7 @@ function startTiming() {
 var args = parameters.interpretUserArgs( process.argv.slice( 2 ) );
 
 if( 'exitCode' in args ){
-  ((args.exitCode > 0) ? console.error : console.info)( args.errMessage );
+  ((args.exitCode > 0) ? logger.error : logger.info)( args.errMessage );
   process.exit( args.exitCode );
 } else {
   startTiming();
