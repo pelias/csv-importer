@@ -6,7 +6,7 @@ FROM pelias/baseimage
 RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
 
 # change working dir
-ENV WORKDIR /code/pelias/openaddresses
+ENV WORKDIR /code/pelias/csv-importer
 WORKDIR ${WORKDIR}
 
 # copy package.json first to prevent npm install being rerun when only code changes
