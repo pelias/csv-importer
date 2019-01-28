@@ -1,9 +1,11 @@
 var tape = require( 'tape' );
 var path = require( 'path' );
 var fs = require('fs');
-var proxyquire = require('proxyquire');
+var proxyquire = require('proxyquire').noCallThru();
 
 var temp = require( 'temp' ).track();
+
+const config = require('pelias-config');
 
 // fake FS module that always says a file is present
 const fakeFsModule = {
@@ -19,57 +21,51 @@ const fakeFsModule = {
   }
 };
 
-// fake pelias-config module that returns a blank config
-const fakePeliasConfig = {
-  generate: function() {
-    return {
-      imports: {}
-    }
-  }
-};
-
-var parameters = proxyquire( '../lib/parameters', {
-  'pelias-config': {},
+var parameters_default = proxyquire( '../lib/parameters', {
+  'pelias-config': {
+    generate: config.generateDefaults
+  },
   fs: fakeFsModule
 });
 
 
-tape( 'interpretUserArgs() sets default parameter options', function ( test ){
+tape( 'interpretUserArgs() allows missing datapath', function ( test ){
   var parametersForThisTest = proxyquire( '../lib/parameters', {
     fs: fakeFsModule,
-    'pelias-config': fakePeliasConfig
+    'pelias-config': {
+      generate: config.generateDefaults
+    }
   });
 
   const input = [ ]; // pass no input
 
   const expectedParamOutput = {
-    dirPath: '/mnt/data/csv', //default path expected
-    'parallel-count': undefined,
-    'parallel-id': undefined
+    errMessage: 'No datapath configured, nothing to do',
+    exitCode: 0,
   };
 
 
   const actual = parametersForThisTest.interpretUserArgs(input);
-  test.deepEqual(actual, expectedParamOutput, 'parameters should have their default values');
+  test.deepEqual(actual, expectedParamOutput, 'Non-failure exit code and message set');
   test.end();
 });
 
 tape('interpretUserArgs returns dir from pelias config if set', function(test) {
   temp.mkdir('tmpdir2', function(err, temporary_dir) {
-    var peliasConfig = {
+    var customPeliasConfig = {
       generate: function() {
-        return {
+        return config.generateCustom( {
           imports: {
             csv: {
               datapath: temporary_dir
             }
           }
-        }
+        });
       }
     };
 
     const parameters = proxyquire('../lib/parameters', {
-      'pelias-config': peliasConfig
+      'pelias-config': customPeliasConfig
     });
 
     var input = [];
@@ -83,20 +79,20 @@ tape('interpretUserArgs returns dir from pelias config if set', function(test) {
 tape('interpretUserArgs returns normalized path from config', function(test) {
   temp.mkdir('tmpdir2', function(err, temporary_dir) {
     var input_dir = path.sep + '.' + temporary_dir;
-    var peliasConfig = {
+    var customPeliasConfig = {
       generate: function() {
-        return {
+        return config.generateCustom({
           imports: {
             csv: {
               datapath: input_dir
             }
           }
-        }
+        });
       }
     };
 
     const parameters = proxyquire('../lib/parameters', {
-      'pelias-config': peliasConfig
+      'pelias-config': customPeliasConfig
     });
 
     var input = [];
@@ -133,7 +129,7 @@ tape('getFileList returns all .csv path names when config has empty files list',
       dirPath: temp_dir
     };
 
-    var actual = parameters.getFileList(peliasConfig, args);
+    var actual = parameters_default.getFileList(peliasConfig, args);
 
     test.equal(actual.length, 3);
     test.ok(actual.find((f) => f === path.join(temp_dir, 'dirA', 'fileA.csv')));
@@ -168,7 +164,7 @@ tape('getFileList returns all .csv path names when config doesn\'t have files pr
       dirPath: temp_dir
     };
 
-    var actual = parameters.getFileList(peliasConfig, args);
+    var actual = parameters_default.getFileList(peliasConfig, args);
 
     test.equal(actual.length, 3);
     test.ok(actual.find((f) => f === path.join(temp_dir, 'dirA', 'fileA.csv')));
@@ -194,7 +190,7 @@ tape('getFileList returns fully qualified path names when config has a files lis
 
     var expected = [path.join(temporary_dir, 'filea.csv'), path.join(temporary_dir, 'fileb.csv')];
 
-    var actual = parameters.getFileList(peliasConfig, args);
+    var actual = parameters_default.getFileList(peliasConfig, args);
 
     test.deepEqual(actual, expected, 'file names should be equal');
     test.end();
@@ -220,7 +216,7 @@ tape('getFileList handles parallel builds', function(test) {
 
       var expected = [path.join(temporary_dir, 'filea.csv')];
 
-      var actual = parameters.getFileList(peliasConfig, args);
+      var actual = parameters_default.getFileList(peliasConfig, args);
 
       t.deepEqual(actual, expected, 'only first file is indexed');
       t.end();
@@ -235,7 +231,7 @@ tape('getFileList handles parallel builds', function(test) {
 
       var expected = [path.join(temporary_dir, 'fileb.csv')];
 
-      var actual = parameters.getFileList(peliasConfig, args);
+      var actual = parameters_default.getFileList(peliasConfig, args);
 
       t.deepEqual(actual, expected, 'only second file indexed');
       t.end();
@@ -250,7 +246,7 @@ tape('getFileList handles parallel builds', function(test) {
 
       var expected = [path.join(temporary_dir, 'filec.csv')];
 
-      var actual = parameters.getFileList(peliasConfig, args);
+      var actual = parameters_default.getFileList(peliasConfig, args);
 
       t.deepEqual(actual, expected, 'only third file indexed');
       t.end();
@@ -265,7 +261,7 @@ tape('getFileList handles parallel builds', function(test) {
 
       var expected = [];
 
-      var actual = parameters.getFileList(peliasConfig, args);
+      var actual = parameters_default.getFileList(peliasConfig, args);
 
       t.deepEqual(actual, expected, 'file list is empty');
       t.end();

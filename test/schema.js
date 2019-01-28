@@ -59,14 +59,14 @@ tape('non-object imports.csv should throw error', function(test) {
 
 });
 
-tape( 'missing datapath should throw error', function(test) {
+tape( 'missing datapath should not throw error', function(test) {
   const config = {
     imports: {
       csv: {}
     }
   };
 
-  test.throws(validate.bind(null, config), /"datapath" is required/);
+  test.doesNotThrow(validate.bind(null, config), 'datapath is not required');
   test.end();
 
 });
