@@ -92,9 +92,16 @@ npm install
 
 ## Usage
 ```bash
+# download files, if desired
+./bin/download
+
 # run an import
 ./bin/start
 ```
+
+## Downloading CSV files
+
+This importer includes a downloader that supports downloading any uncompressed CSV files over HTTP/HTTPS.
 
 ## Configuration
 This importer can be configured in [pelias-config](https://github.com/pelias/config), in the `imports.csv`
@@ -123,7 +130,10 @@ hash. A sample configuration file might look like:
     },
     "csv": {
       "datapath": "/path/to/your/csv/files",
-      "files": []
+      "files": [],
+      "download": [
+        "https://example.com/csv-to-download.csv"
+      ]
     }
   }
 }
@@ -136,5 +146,6 @@ The following configuration options are supported by this importer.
 
 | key | required | default | description |
 | --- | --- | --- | --- |
-| `datapath` | yes | | The absolute path of the directory containing data files. |
-| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, *all* `.csv` files in the given directory will be imported.
+| `datapath` | yes | | The absolute path of the directory containing data files, or where downloaded files will be stored. |
+| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, *all* `.csv` files in the given directory will be imported. |
+| `download` | no | An array of URLs of CSV files that can be downloaded. Files must be plain-text (uncompressed) CSV files |
