@@ -1,9 +1,3 @@
-/**
- * @file The main entry point for the OpenAddresses importer's unit-tests.
- */
-
-'use strict';
-
 require( './schema' );
 require( './import');
 require( './parameters' );

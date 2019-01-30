@@ -1,9 +1,3 @@
-/**
- * @file Entry-point script for the OpenAddresses import pipeline.
- */
-
-'use strict';
-
 var peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
 
 var logger = require( 'pelias-logger' ).get( 'csv-importer' );

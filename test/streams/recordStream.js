@@ -111,7 +111,7 @@ tape(
   }
 );
 
-tape( 'getIdPrefix returns prefix based on OA directory structure', function( test ) {
+tape( 'getIdPrefix returns prefix based on irectory structure', function( test ) {
   var filename = '/base/path/us/ca/san_francisco.csv';
   var basePath = '/base/path';
 
