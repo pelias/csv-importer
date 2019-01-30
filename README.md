@@ -15,7 +15,7 @@ It's originally based off of the [OpenAddresses importer](https://github.com/pel
 
 This importer will process any CSV, attempting to create a Pelias document for each row.
 
-In order to be useful, each row needs to define a latitude, a longitude, and either an address, name or both.
+In order to be useful, each row needs to define a source, a latitude, a longitude, and either an address, name or both.
 
 This importer will accept any column name as uppercase or lowercase. Lowercase has priority if both are present.
 
@@ -67,6 +67,15 @@ Custom data with arbitrary sources are supported by this importer and can be use
 filtering. The source value won't have any other effect on how Pelias treats a record when querying.
 
 Valid column names for the source value are : `source`
+
+## ID
+
+An ID is a unique identifier for each record. Pelias IDs are strings, so they
+can contain text. Pelias records must have a unique source, layer, and ID.
+Attempting to create multiple records with the same source, layer and ID will
+cause all but the most recent record to be overwritten.
+
+If an ID is not specified for a row in a CSV, the row number will be used.
 
 ## Requirements
 
