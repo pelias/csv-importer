@@ -15,7 +15,7 @@ It's originally based off of the [OpenAddresses importer](https://github.com/pel
 
 This importer will process any CSV, attempting to create a Pelias document for each row.
 
-In order to be useful, each row needs to define a latitude, a longitude, and either an address, name or both.
+In order to be useful, each row needs to define a source, a latitude, a longitude, and either an address, name or both.
 
 This importer will accept any column name as uppercase or lowercase. Lowercase has priority if both are present.
 
@@ -68,6 +68,15 @@ filtering. The source value won't have any other effect on how Pelias treats a r
 
 Valid column names for the source value are : `source`
 
+## ID
+
+An ID is a unique identifier for each record. Pelias IDs are strings, so they
+can contain text. Pelias records must have a unique source, layer, and ID.
+Attempting to create multiple records with the same source, layer and ID will
+cause all but the most recent record to be overwritten.
+
+If an ID is not specified for a row in a CSV, the row number will be used.
+
 ## Requirements
 
 Node.js is required.
@@ -83,9 +92,16 @@ npm install
 
 ## Usage
 ```bash
+# download files, if desired
+./bin/download
+
 # run an import
 ./bin/start
 ```
+
+## Downloading CSV files
+
+This importer includes a downloader that supports downloading any uncompressed CSV files over HTTP/HTTPS.
 
 ## Configuration
 This importer can be configured in [pelias-config](https://github.com/pelias/config), in the `imports.csv`
@@ -114,7 +130,10 @@ hash. A sample configuration file might look like:
     },
     "csv": {
       "datapath": "/path/to/your/csv/files",
-      "files": []
+      "files": [],
+      "download": [
+        "https://example.com/csv-to-download.csv"
+      ]
     }
   }
 }
@@ -127,5 +146,6 @@ The following configuration options are supported by this importer.
 
 | key | required | default | description |
 | --- | --- | --- | --- |
-| `datapath` | yes | | The absolute path of the directory containing data files. |
-| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, *all* `.csv` files in the given directory will be imported.
+| `datapath` | yes | | The absolute path of the directory containing data files, or where downloaded files will be stored. |
+| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, *all* `.csv` files in the given directory will be imported. |
+| `download` | no | An array of URLs of CSV files that can be downloaded. Files must be plain-text (uncompressed) CSV files |
