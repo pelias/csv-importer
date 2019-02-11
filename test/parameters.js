@@ -266,5 +266,6 @@ tape('getFileList handles parallel builds', function(test) {
       t.deepEqual(actual, expected, 'file list is empty');
       t.end();
     });
+    test.end();
   });
 });
