@@ -178,3 +178,27 @@ tape('documentStream uses layer_id value if present', function(test) {
     test.end();
   });
 });
+
+tape('documentStream parses JSON from addendum_json_* field', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    addendum_json_custom_field: '{ "foo": "bar"}'
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+
+  test_stream([input], documentStream, function(err, actual) {
+    console.log(JSON.stringify(actual, null, 2));
+    test.deepEquals(actual[0].getAddendum('custom_field'), { foo: 'bar' }, 'custom data is added to record');
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
