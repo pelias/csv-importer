@@ -147,5 +147,5 @@ The following configuration options are supported by this importer.
 | key | required | default | description |
 | --- | --- | --- | --- |
 | `datapath` | yes | | The absolute path of the directory containing data files, or where downloaded files will be stored. |
-| `files` | no | | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, *all* `.csv` files in the given directory will be imported. |
-| `download` | no | An array of URLs of CSV files that can be downloaded. Files must be plain-text (uncompressed) CSV files |
+| `files` | no | `[]` | An array of the names of the files to import. If specified, *only* these files will be imported. If not specified, or empty,  *all* `.csv` files in the given directory will be imported. |
+| `download` | no | `[]` | An array of URLs of CSV files that can be downloaded. Files must be plain-text (uncompressed) CSV files |
