@@ -27,5 +27,12 @@ if( 'exitCode' in args ){
 
   var files = parameters.getFileList(peliasConfig, args);
 
-  importPipeline.create( files, args.dirPath );
+  const importer_id = args['parallel-id'];
+  let importer_name = 'csv';
+
+  if (importer_id !== undefined) {
+    importer_name = `csv-${importer_id}`;
+  }
+
+  importPipeline.create( files, args.dirPath, importer_name);
 }
