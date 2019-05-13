@@ -134,6 +134,47 @@ tape('documentStream uses HASH value if present', function(test) {
   });
 });
 
+tape('documentStream uses NAME value if present', function(test) {
+  const input = {
+    NAME: 'thename',
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.equal(actual[0].getName('default'), 'thename', 'name set correctly');
+    test.end();
+  });
+});
+
+tape('documentStream uses name value if present (over NAME)', function(test) {
+  const input = {
+    name: 'name',
+    NAME: 'not-used',
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.equal(actual[0].getName('default'), 'name', 'name set correctly');
+    test.end();
+  });
+});
+
 tape('documentStream uses layer value if present (over LAYER, layer_id, and LAYER_ID)', function(test) {
   const input = {
     NUMBER: '5',
