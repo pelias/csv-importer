@@ -160,6 +160,11 @@ hash. A sample configuration file might look like:
       }
     ]
   },
+  "api": {
+    "targets": {
+      "yoursource": ["yourlayers"]
+    }
+  },
   "logger": {
     "level": "debug"
   },
@@ -175,6 +180,19 @@ hash. A sample configuration file might look like:
       "download": [
         "https://example.com/csv-to-download.csv"
       ]
+    }
+  }
+}
+```
+
+**Important:** You must put any custom source and layers imported by your data in `pelias.json as explained in the relevant [API configuration documentation](https://github.com/pelias/api#custom-sources-and-layers). For a reasonably common use case for the source `csv` with only records in the `address` layer, the following configuration is a good starting point:
+
+
+```
+{
+  "api": {
+    "targets": {
+      "csv": ["address"]
     }
   }
 }
