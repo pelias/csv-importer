@@ -72,6 +72,7 @@ tape('interpretUserArgs returns dir from pelias config if set', function(test) {
     var result = parameters.interpretUserArgs(input);
 
     test.equal(result.dirPath, temporary_dir, 'path should be equal to path from config');
+    temp.cleanupSync();
     test.end();
   });
 });
@@ -100,6 +101,7 @@ tape('interpretUserArgs returns normalized path from config', function(test) {
 
     var expected_dir = path.normalize(input_dir);
     test.equal(result.dirPath, expected_dir, 'path should be equal to path from config');
+    temp.cleanupSync();
     test.end();
   });
 });
@@ -135,6 +137,7 @@ tape('getFileList returns all .csv path names when config has empty files list',
     test.ok(actual.find((f) => f === path.join(temp_dir, 'dirA', 'fileA.csv')));
     test.ok(actual.find((f) => f === path.join(temp_dir, 'dirB', 'fileB.csv')));
     test.ok(actual.find((f) => f === path.join(temp_dir, 'fileC.csv')));
+    temp.cleanupSync();
     test.end();
 
   });
@@ -170,6 +173,7 @@ tape('getFileList returns all .csv path names when config doesn\'t have files pr
     test.ok(actual.find((f) => f === path.join(temp_dir, 'dirA', 'fileA.csv')));
     test.ok(actual.find((f) => f === path.join(temp_dir, 'dirB', 'fileB.csv')));
     test.ok(actual.find((f) => f === path.join(temp_dir, 'fileC.csv')));
+    temp.cleanupSync();
     test.end();
 
   });
@@ -193,6 +197,7 @@ tape('getFileList returns fully qualified path names when config has a files lis
     var actual = parameters_default.getFileList(peliasConfig, args);
 
     test.deepEqual(actual, expected, 'file names should be equal');
+    temp.cleanupSync();
     test.end();
   });
 });
@@ -264,6 +269,7 @@ tape('getFileList handles parallel builds', function(test) {
       var actual = parameters_default.getFileList(peliasConfig, args);
 
       t.deepEqual(actual, expected, 'file list is empty');
+      temp.cleanupSync();
       t.end();
     });
     test.end();
