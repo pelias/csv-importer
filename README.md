@@ -34,6 +34,8 @@ Valid column names for housenumber are: `housenumber`, `number`
 
 Valid column names for postalcode are: `postalcode`, `zipcode`
 
+Valid column names for intersections are: `cross_street` (note: `street` is also required!)
+
 ## Name
 A name is a free-form string that represents the name of a record. It might be
 the name of a venue which also has an address, or the name of a city, mountain, or other interesting feature.
