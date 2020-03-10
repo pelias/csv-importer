@@ -1,15 +1,11 @@
-'use strict';
-
 const tape = require( 'tape' );
-const Joi = require('joi');
 const schema = require( '../schema' );
 
 function validate(config) {
-  Joi.validate(config, schema, (err) => {
-    if (err) {
-      throw new Error(err.details[0].message);
-    }
-  });
+  const result = schema.validate(config);
+  if (result.error) {
+    throw new Error(result.error.details[0].message);
+  }
 }
 
 tape('missing imports should throw error', function(test) {
@@ -26,7 +22,7 @@ tape('non-object imports should throw error', function(test) {
       imports: value
     };
 
-    test.throws(validate.bind(null, config), /"imports" must be an object/);
+    test.throws(validate.bind(null, config), /"imports" must be of type object/);
   });
 
   test.end();
@@ -39,7 +35,7 @@ tape('missing imports.csv should throw error', function(test) {
     }
   };
 
-  test.throws(validate.bind(null, config), /"csv" is required/);
+  test.throws(validate.bind(null, config), /"imports.csv" is required/);
   test.end();
 
 });
@@ -52,7 +48,7 @@ tape('non-object imports.csv should throw error', function(test) {
       }
     };
 
-    test.throws(validate.bind(null, config), /"csv" must be an object/);
+    test.throws(validate.bind(null, config), /"imports.csv" must be of type object/);
   });
 
   test.end();
@@ -81,7 +77,7 @@ tape( 'non-string datapath should throw error', function(test) {
       }
     };
 
-    test.throws(validate.bind(null, config), /"datapath" must be a string/);
+    test.throws(validate.bind(null, config), /"imports.csv.datapath" must be a string/);
 
   });
 
@@ -99,7 +95,7 @@ tape( 'non-array files should throw error', function(test) {
       }
     };
 
-    test.throws(validate.bind(null, config), /"files" must be an array/);
+    test.throws(validate.bind(null, config), /"imports.csv.files" must be an array/);
   });
 
   test.end();
@@ -116,7 +112,7 @@ tape( 'non-string elements in files array should throw error', function(test) {
       }
     };
 
-    test.throws(validate.bind(null, config), /"0" must be a string/, 'files elements must be strings');
+    test.throws(validate.bind(null, config), /"imports.csv.files\[0\]" must be a string/, 'files elements must be strings');
   });
 
   test.end();
@@ -133,7 +129,7 @@ tape( 'non-boolean adminLookup should throw error', function(test) {
       }
     };
 
-    test.throws(validate.bind(null, config), /"adminLookup" must be a boolean/);
+    test.throws(validate.bind(null, config), /"imports.csv.adminLookup" must be a boolean/);
   });
 
   test.end();
@@ -150,7 +146,7 @@ tape( 'non-boolean deduplicate should throw error', function(test) {
       }
     };
 
-    test.throws(validate.bind(null, config), /"deduplicate" must be a boolean/);
+    test.throws(validate.bind(null, config), /"imports.csv.deduplicate" must be a boolean/);
   });
 
   test.end();
@@ -166,7 +162,7 @@ tape( 'unknown config fields should throw error', function(test) {
     }
   };
 
-  test.throws(validate.bind(null, config), /"unknown" is not allowed/, 'unknown fields should be disallowed');
+  test.throws(validate.bind(null, config), /"imports.csv.unknown" is not allowed/, 'unknown fields should be disallowed');
   test.end();
 
 });
