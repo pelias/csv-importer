@@ -44,7 +44,7 @@
     "download": "./bin/download",
     "lint": "jshint .",
     "validate": "npm ls",
-    "travis": "npm ls",
+    "travis": "npm test",
     "start": "./bin/start"
   },
   "repository": {
