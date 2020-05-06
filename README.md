@@ -32,7 +32,7 @@ Valid column names for street are: `street`
 
 Valid column names for housenumber are: `housenumber`, `number`
 
-Valid column names for postalcode are: `postalcode`, `zipcode`
+Valid column names for postalcode are: `postalcode`, `postcode`, `zipcode`
 
 Valid column names for intersections are: `cross_street` (note: `street` is also required!)
 
