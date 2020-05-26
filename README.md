@@ -79,6 +79,34 @@ cause all but the most recent record to be overwritten.
 
 If an ID is not specified for a row in a CSV, the row number will be used.
 
+## Names in multiple Languages
+
+Multiple names in different languages can be assigned by using the `name_$lang` fields, where $lang is an [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code.
+
+For example, to create a record for London in English and French, use the following CSV:
+
+id | name | name_fr | source | layer | lat | lon |
+-- | ---- | ------- | ------ | ----- | --- | --- |
+1 | London | Londres | custom | locality | 5 | 6 |
+
+## Multiple alias names
+
+A record can have multiple aliases, or alternative names, specified as an array using the `name_json` field.
+
+The following CSV will create a record for [John F Kennedy International Airport](https://en.wikipedia.org/wiki/John_F._Kennedy_International_Airport), with common aliases including `JFK` and `JFK airport`.
+
+id | name | name_json | source | layer | lat | lon |
+-- | ---- | ------- | ------ | ----- | --- | --- |
+1 | John F Kennedy International Airport | "[""JFK"", ""JFK Airport""]" | custom | venue | 40.639722 | -73.778889
+
+The contents of the `name_json` field must be a JSON array. As a reminder, in CSV files, records that contain commas must be quoted using double quotes, and records with a double quote in the value itself must be double-double-quoted, as shown above.
+
+Aliases and languages can _both_ be specified. For example, the `name_json_es` field allows setting multiple aliases in Spanish.
+
+## Categories
+
+Category values can be added to a record. For a single category, use the `category` field. For multiple categories, use `category_json`, with the same formatting as for alias names.
+
 ## Custom data
 
 Arbitrary custom data that does not fit into the standard Pelias schema can be stored for later retrieval under the `addendum` property.

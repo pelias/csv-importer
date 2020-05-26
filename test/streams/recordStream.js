@@ -39,6 +39,7 @@ function testRecordStream(test, input, expected) {
       var testStream = through.obj(function ( data, enc, next ){
         //within this stream, test all the expected properties
         test.equal(data.getName('default'), expected.name, 'Name matches');
+        test.deepEqual(data.getNameAliases('default'), expected.name_aliases || [], 'Name aliases matches');
         test.equal(data.getSource(), expected.source, 'source matches');
         test.equal(data.getLayer(), expected.layer, 'layer matches');
 
@@ -54,10 +55,21 @@ function testRecordStream(test, input, expected) {
           test.equal(data.getAddress('number'), expected.number, 'Housenumber matches');
         }
 
+        Object.keys(expected)
+          .filter(key => /$name_[a-z]{2}$/.test(key))
+          .forEach(key => {
+            const lang = key.slice(5).toLowerCase();
+            test.equal(data.getName(lang), expected[key], `Name ${lang} matches`);
+            test.deepEqual(data.getNameAliases(lang), expected[`name_aliases_${lang}`], `Name aliases ${lang} matches`);
+          })
+
+        test.deepEqual(data.category, expected.category || [], 'Categories matches');
+
         next();
       });
 
-      dataStream.pipe(testStream);
+      dataStream.pipe(testStream)
+        .on('finish', () => temp.cleanupSync());
     });
 
   });
@@ -105,6 +117,26 @@ tape(
     // all caps number accepted as housenumber (OpenAddresses style)
     testRecordStream(test, { NUMBER: 101, street: 'Main St', lat: 5, lon:3},
       {number: '101', street: 'Main St', source: 'csv', layer: 'venue', lat: 5, lon: 3, layer: 'venue' });
+
+    // supports for alt names
+    testRecordStream(test, { name_json: '"[""foo"", ""bar""]"', lat: 5, lon:3},
+      { name: 'foo', name_aliases: ['bar'], source: 'csv', layer: 'venue', lat: 5, lon: 3 });
+
+    // supports for both name and aliases
+    testRecordStream(test, { name: 'foo', NAME_JSON: '"[""bar"", ""baz""]"', lat: 5, lon:3},
+      { name: 'foo',  name_aliases: ['bar', 'baz'], source: 'csv', layer: 'venue', lat: 5, lon: 3 });
+
+    // supports for multi-lang
+    testRecordStream(test, { name: 'foo', name_fr: 'bar', lat: 5, lon:3},
+      { name: 'foo', name_fr: 'bar', source: 'csv', layer: 'venue', lat: 5, lon: 3 });
+
+    // supports for multi-lang and aliases
+    testRecordStream(test, { name: 'foo', NAME_FR: 'bar', NAME_JSON_FR: '"[""baz""]"', lat: 5, lon:3},
+      { name: 'foo', name_fr: 'bar',  name_aliases_fr: ['baz'], source: 'csv', layer: 'venue', lat: 5, lon: 3 });
+
+    // supports for categories
+    testRecordStream(test, { name: 'foo', category: 'bar', category_json: '"[""baz""]"', lat: 5, lon:3},
+      { name: 'foo', category: ['bar', 'baz'], source: 'csv', layer: 'venue', lat: 5, lon: 3 });
 
     // the end
     test.end();
