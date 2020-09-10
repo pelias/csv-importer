@@ -25,6 +25,8 @@ Latitude can come from a column called `lat`
 ### Longitude
 Longitude can come from a column called `lon`
 
+**PROJECTION** : Make sure that both Latitude and Longitude are projected in [WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84)
+
 ### Address
 A valid address consists of at least a street, and possibly a housenumber and postalcode.
 
