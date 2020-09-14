@@ -15,7 +15,13 @@ It's originally based off of the [OpenAddresses importer](https://github.com/pel
 
 This importer will process any CSV, attempting to create a Pelias document for each row.
 
-In order to be useful, each row needs to define a source, a latitude, a longitude, and either an address, name or both.
+In order to be useful, each row needs to define those fields : 
+
+- source (string)
+- latitude (float)
+- longitude (float) 
+- address (string)
+- name (string)
 
 This importer will accept any column name as uppercase or lowercase. Lowercase has priority if both are present.
 
@@ -39,7 +45,7 @@ Valid column names for postalcode are: `postalcode`, `postcode`, `zipcode`
 Valid column names for intersections are: `cross_street` (note: `street` is also required!)
 
 ## Name
-A name is a free-form string that represents the name of a record. It might be
+This field is mandatory. Its type is a free-form string that represents the name of a record. It might be
 the name of a venue which also has an address, or the name of a city, mountain, or other interesting feature.
 
 Valid column names for name are: `name`
