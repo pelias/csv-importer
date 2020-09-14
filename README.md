@@ -1,11 +1,28 @@
->This repository is part of the [Pelias](https://github.com/pelias/pelias)
->project. Pelias is an open-source, open-data geocoder originally sponsored by
->[Mapzen](https://www.mapzen.com/). Our official user documentation is
->[here](https://github.com/pelias/documentation).
+<p align="center">
+  <img height="100" src="https://raw.githubusercontent.com/pelias/design/master/logo/pelias_github/Github_markdown_hero.png">
+</p>
+<h3 align="center">A modular, open-source search engine for our world.</h3>
+<p align="center">Pelias is a geocoder powered completely by open data, available freely to everyone.</p>
+<p align="center">
+<a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/github/license/pelias/api?style=flat&color=orange" /></a>
+<a href="https://hub.docker.com/u/pelias"><img src="https://img.shields.io/docker/pulls/pelias/api?style=flat&color=informational" /></a>
+<a href="https://gitter.im/pelias/pelias"><img src="https://img.shields.io/gitter/room/pelias/pelias?style=flat&color=yellow" /></a>
+</p>
+<p align="center">
+	<a href="https://github.com/pelias/docker">Local Installation</a> ·
+        <a href="https://geocode.earth">Cloud Webservice</a> ·
+	<a href="https://github.com/pelias/documentation">Documentation</a> ·
+	<a href="https://gitter.im/pelias/pelias">Community Chat</a>
+</p>
+<details open>
+<summary>What is Pelias?</summary>
+<br />
+Pelias is a search engine for places worldwide, powered by open data. It turns addresses and place names into geographic coordinates, and turns geographic coordinates into places and addresses. With Pelias, you’re able to turn your users’ place searches into actionable geodata and transform your geodata into real places.
+<br /><br />
+We think open data, open source, and open strategy win over proprietary solutions at any part of the stack and we want to ensure the services we offer are in line with that vision. We believe that an open geocoder improves over the long-term only if the community can incorporate truly representative local knowledge.
+</details>
 
 # Pelias CSV Importer
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/csv-importer.svg)](https://greenkeeper.io/)
 
 This importer is designed to bring data into Pelias from a properly formatted CSV file.
 
@@ -15,23 +32,19 @@ It's originally based off of the [OpenAddresses importer](https://github.com/pel
 
 This importer will process any CSV, attempting to create a Pelias document for each row.
 
-In order to be useful, each row needs to define those fields : 
-
-- source (string)
-- latitude (float)
-- longitude (float) 
-- address (string)
-- name (string)
+In order to be useful, each row needs to define a source, a latitude, a longitude, and a name. Address components can optionally be specified.
 
 This importer will accept any column name as uppercase or lowercase. Lowercase has priority if both are present.
 
 ### Latitude
-Latitude can come from a column called `lat`
+Latitude can come from a column called `lat`. It should be a
+[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) value
+between `-90.0` and `90.0`.
 
 ### Longitude
-Longitude can come from a column called `lon`
-
-**PROJECTION** : Make sure that both Latitude and Longitude are projected in [WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84)
+Longitude can come from a column called `lon`.  It should be a
+[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) value
+between `-180.0` and `180.0`.
 
 ### Address
 A valid address consists of at least a street, and possibly a housenumber and postalcode.
@@ -45,10 +58,10 @@ Valid column names for postalcode are: `postalcode`, `postcode`, `zipcode`
 Valid column names for intersections are: `cross_street` (note: `street` is also required!)
 
 ## Name
-This field is mandatory. Its type is a free-form string that represents the name of a record. It might be
+A free-form string that represents the name of a record. It might be
 the name of a venue which also has an address, or the name of a city, mountain, or other interesting feature.
 
-Valid column names for name are: `name`
+Valid column names for name are: `name`.
 
 ## Layer
 Pelias allows sorting records into different layers, representing different classes of data.
