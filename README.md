@@ -15,23 +15,19 @@ It's originally based off of the [OpenAddresses importer](https://github.com/pel
 
 This importer will process any CSV, attempting to create a Pelias document for each row.
 
-In order to be useful, each row needs to define those fields : 
-
-- source (string)
-- latitude (float)
-- longitude (float) 
-- address (string)
-- name (string)
+In order to be useful, each row needs to define a source, a latitude, a longitude, and a name. Address components can optionally be specified.
 
 This importer will accept any column name as uppercase or lowercase. Lowercase has priority if both are present.
 
 ### Latitude
-Latitude can come from a column called `lat`
+Latitude can come from a column called `lat`. It should be a
+[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) value
+between `-90.0` and `90.0`.
 
 ### Longitude
-Longitude can come from a column called `lon`
-
-**PROJECTION** : Make sure that both Latitude and Longitude are projected in [WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84)
+Longitude can come from a column called `lon`.  It should be a
+[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) value
+between `-180.0` and `180.0`.
 
 ### Address
 A valid address consists of at least a street, and possibly a housenumber and postalcode.
@@ -45,10 +41,10 @@ Valid column names for postalcode are: `postalcode`, `postcode`, `zipcode`
 Valid column names for intersections are: `cross_street` (note: `street` is also required!)
 
 ## Name
-This field is mandatory. Its type is a free-form string that represents the name of a record. It might be
+A free-form string that represents the name of a record. It might be
 the name of a venue which also has an address, or the name of a city, mountain, or other interesting feature.
 
-Valid column names for name are: `name`
+Valid column names for name are: `name`.
 
 ## Layer
 Pelias allows sorting records into different layers, representing different classes of data.
