@@ -24,8 +24,6 @@ We think open data, open source, and open strategy win over proprietary solution
 
 # Pelias CSV Importer
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/csv-importer.svg)](https://greenkeeper.io/)
-
 This importer is designed to bring data into Pelias from a properly formatted CSV file.
 
 It's originally based off of the [OpenAddresses importer](https://github.com/pelias/openaddresses), which also uses a CSV format.
