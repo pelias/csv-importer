@@ -24,8 +24,7 @@
     "through2": "^3.0.0",
     "through2-filter": "^3.0.0",
     "through2-map": "^3.0.0",
-    "through2-sink": "^1.0.0",
-    "tmp": "^0.2.0"
+    "through2-sink": "^1.0.0"
   },
   "devDependencies": {
     "deep-diff": "^1.0.2",

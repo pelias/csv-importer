@@ -3,7 +3,6 @@ const url = require('url');
 const path = require('path');
 const async = require('async');
 const fs = require('fs-extra');
-const tmp = require('tmp');
 const logger = require('pelias-logger').get('csv-download');
 const config = require('pelias-config').generate();
 
