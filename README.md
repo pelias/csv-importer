@@ -124,6 +124,10 @@ The contents of the `name_json` field must be a JSON array. As a reminder, in CS
 
 Aliases and languages can _both_ be specified. For example, the `name_json_es` field allows setting multiple aliases in Spanish.
 
+## Popularity
+
+Popularity values can be specified to mark records as more important than others. This value should be an integer greater than zero, in the `popularity` column.
+
 ## Categories
 
 Category values can be added to a record. For a single category, use the `category` field. For multiple categories, use `category_json`, with the same formatting as for alias names.
