@@ -325,3 +325,43 @@ tape('documentStream parses JSON from category_json field', function(test) {
     test.end();
   });
 });
+
+tape( 'documentStream accepts popularity', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    postalcode: '10010',
+    popularity: '5000'
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.equal(actual[0].getPopularity(), 5000);
+    test.end();
+  });
+});
+
+
+tape( 'documentStream rejects invalid popularity', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    postalcode: '10010',
+    popularity: '500a0'
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 0, 'the document should be skipped' );
+    test.equal(stats.badRecordCount, 1, 'bad record count went up by 1');
+    test.end();
+  });
+});
