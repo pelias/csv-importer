@@ -280,6 +280,77 @@ tape('documentStream parses JSON from addendum_json_* field', function(test) {
   });
 });
 
+tape('documentStream parses empty JSON from addendum_json_* field', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    addendum_json_custom_field: ''
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+
+  test_stream([input], documentStream, function(err, actual) {
+    console.log(JSON.stringify(actual, null, 2));
+    test.deepEquals(actual[0].getAddendum('custom_field'), undefined, 'undefined custom data is added to record');
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+
+tape('documentStream parses undefined JSON from addendum_json_* field', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    addendum_json_custom_field: undefined
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+
+  test_stream([input], documentStream, function(err, actual) {
+    console.log(JSON.stringify(actual, null, 2));
+    test.deepEquals(actual[0].getAddendum('custom_field'), undefined, 'undefined custom data is added to record');
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream does not parse corrupt JSON from addendum_json_* field', function(test) {
+  const input = {
+    NUMBER: '5',
+    STREET: '101st Avenue',
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    addendum_json_custom_field: '{ "foo": "bar'
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    // console.log(JSON.stringify(actual, null, 2));
+    test.equal(actual.length, 0, 'the document should not be pushed' );
+    test.equal(stats.badRecordCount, 1, 'bad record count 1');
+    test.end();
+  });
+});
+
 tape('documentStream parses JSON from name_json_* field', function(test) {
   const input = {
     LAT: 5,
