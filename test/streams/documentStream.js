@@ -374,6 +374,50 @@ tape('documentStream parses JSON from name_json_* field', function(test) {
   });
 });
 
+tape('documentStream ignores empty JSON from name_json_* field', function(test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    name_json_fr: '',
+    name_json: '',
+    name: 'foo',
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.deepEquals(actual[0].getName('default'), 'foo', 'default name is added to record');
+    test.deepEquals(actual[0].getName('fr'), undefined, 'fr name is not added to record');
+    test.deepEquals(actual[0].getNameAliases('fr'), [], 'fr name aliases are not added to record');
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream fails on bad JSON from name_json_* field', function(test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    name_json_fr: '["bar", "b',
+    name_json: '["foo"]'
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 0, 'the document should not be pushed' );
+    test.equal(stats.badRecordCount, 1, 'bad record count unchanged');
+    test.end();
+  });
+});
+
 tape('documentStream parses JSON from category_json field', function(test) {
   const input = {
     LAT: 5,
@@ -392,6 +436,52 @@ tape('documentStream parses JSON from category_json field', function(test) {
     test.equal(actual.length, 1, 'the document should be pushed' );
     test.deepEquals(actual[0].getName('default'), 'foo', 'default name is added to record');
     test.deepEquals(actual[0].category, ['bar', 'baz'], 'default name is added to record');
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream ignores empty JSON from category_json field', function(test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    name: 'foo',
+    category: 'bar',
+    category_json: ''
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.deepEquals(actual[0].getName('default'), 'foo', 'default name is added to record');
+    test.deepEquals(actual[0].category, ['bar'], 'category is added to record, empty category_json ignored');
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream ignores undefined JSON from category_json field', function(test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    HASH: 'abcd',
+    layer_id: 'desired-layer',
+    name: 'foo',
+    category: 'bar',
+    category_json: undefined
+  };
+
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function(err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed' );
+    test.deepEquals(actual[0].getName('default'), 'foo', 'default name is added to record');
+    test.deepEquals(actual[0].category, ['bar'], 'category is added to record, empty category_json ignored');
     test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
     test.end();
   });
