@@ -43,7 +43,7 @@
     "download": "./bin/download",
     "lint": "jshint .",
     "validate": "npm ls",
-    "travis": "npm test",
+    "ci": "npm test",
     "start": "./bin/start"
   },
   "repository": {
