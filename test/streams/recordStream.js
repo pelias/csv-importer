@@ -24,54 +24,58 @@ function getValues(object) {
  * Helper function to create and use a recordStream object and CSV input file for testing
  */
 function testRecordStream(test, input, expected) {
-  temp.open('csv-importer-test', function(err, info) {
-    // generate a custom CSV and write it to a file
-    const header_row = Object.keys(input).join(',') + "\n";
-    const data_row = getValues(input) + "\n";
-    fs.writeSync(info.fd, header_row);
-    fs.writeSync(info.fd, data_row);
+  test.test(function(this_test) {
+    temp.open('csv-importer-test', function(err, info) {
+      // generate a custom CSV and write it to a file
+      const header_row = Object.keys(input).join(',') + "\n";
+      const data_row = getValues(input) + "\n";
+      fs.writeSync(info.fd, header_row);
+      fs.writeSync(info.fd, data_row);
 
-    // close temporary file and create a test stream with it
-    fs.close(info.fd, function(err) {
-      const dataStream = recordStream.create([info.path]);
-      test.ok( dataStream.readable, 'Stream is readable.' );
+      // close temporary file and create a test stream with it
+      fs.close(info.fd, function(err) {
+        const dataStream = recordStream.create([info.path]);
+        this_test.ok( dataStream.readable, 'Stream is readable.' );
 
-      var testStream = through.obj(function ( data, enc, next ){
-        //within this stream, test all the expected properties
-        test.equal(data.getName('default'), expected.name, 'Name matches');
-        test.deepEqual(data.getNameAliases('default'), expected.name_aliases || [], 'Name aliases matches');
-        test.equal(data.getSource(), expected.source, 'source matches');
-        test.equal(data.getLayer(), expected.layer, 'layer matches');
+        var testStream = through.obj(function ( data, enc, next ){
+          //within this stream, test all the expected properties
+          this_test.equal(data.getName('default'), expected.name, 'Name matches');
+          this_test.deepEqual(data.getNameAliases('default'), expected.name_aliases || [], 'Name aliases matches');
+          this_test.equal(data.getSource(), expected.source, 'source matches');
+          this_test.equal(data.getLayer(), expected.layer, 'layer matches');
 
-        const centroid = data.getCentroid();
-        test.ok( expected.lon - centroid.lon < 1e-6, 'Longitude matches' );
-        test.ok( expected.lat - centroid.lat < 1e-6, 'Latitude matches' );
+          const centroid = data.getCentroid();
+          this_test.ok( expected.lon - centroid.lon < 1e-6, 'Longitude matches' );
+          this_test.ok( expected.lat - centroid.lat < 1e-6, 'Latitude matches' );
 
-        if (expected.street) {
-          test.equal(data.getAddress('street'), expected.street, 'Street matches');
-        }
+          if (expected.street) {
+            this_test.equal(data.getAddress('street'), expected.street, 'Street matches');
+          }
 
-        if (expected.number) {
-          test.equal(data.getAddress('number'), expected.number, 'Housenumber matches');
-        }
+          if (expected.number) {
+            this_test.equal(data.getAddress('number'), expected.number, 'Housenumber matches');
+          }
 
-        Object.keys(expected)
-          .filter(key => /$name_[a-z]{2}$/.test(key))
-          .forEach(key => {
-            const lang = key.slice(5).toLowerCase();
-            test.equal(data.getName(lang), expected[key], `Name ${lang} matches`);
-            test.deepEqual(data.getNameAliases(lang), expected[`name_aliases_${lang}`], `Name aliases ${lang} matches`);
-          })
+          Object.keys(expected)
+            .filter(key => /$name_[a-z]{2}$/.test(key))
+            .forEach(key => {
+              const lang = key.slice(5).toLowerCase();
+              this_test.equal(data.getName(lang), expected[key], `Name ${lang} matches`);
+              this_test.deepEqual(data.getNameAliases(lang), expected[`name_aliases_${lang}`], `Name aliases ${lang} matches`);
+            })
 
-        test.deepEqual(data.category, expected.category || [], 'Categories matches');
+          this_test.deepEqual(data.category, expected.category || [], 'Categories matches');
 
-        next();
+          next();
+        });
+
+        dataStream.pipe(testStream)
+          .on('finish', () => {
+            temp.cleanupSync()
+            this_test.end();
+          });
       });
-
-      dataStream.pipe(testStream)
-        .on('finish', () => temp.cleanupSync());
     });
-
   });
 }
 
@@ -137,9 +141,6 @@ tape(
     // supports for categories
     testRecordStream(test, { name: 'foo', category: 'bar', category_json: '"[""baz""]"', lat: 5, lon:3},
       { name: 'foo', category: ['bar', 'baz'], source: 'csv', layer: 'venue', lat: 5, lon: 3 });
-
-    // the end
-    test.end();
   }
 );
 
