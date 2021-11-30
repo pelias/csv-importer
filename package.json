@@ -10,7 +10,7 @@
     "@hapi/joi": "^16.0.0",
     "async": "^3.0.1",
     "combined-stream": "^1.0.7",
-    "csv-parse": "^4.0.1",
+    "csv-parse": "^5.0.3",
     "fs-extra": "^8.0.0",
     "glob": "^7.0.0",
     "lodash": "^4.16.0",
