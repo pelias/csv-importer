@@ -522,3 +522,80 @@ tape( 'documentStream rejects invalid popularity', function(test) {
     test.end();
   });
 });
+
+tape('documentStream accepts parent value if present', function (test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    popularity: '500',
+    parent_json: {
+      country: { id: "NOR", name: "NO" }
+    }
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function (err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed');
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream accepts multiple parent values if present', function (test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    popularity: '500',
+    parent_json: {
+      country: { id: "NOR", name: "Norway" },
+      locality: { id: "0301", name: "Oslo", abbr: "osl", source: "nationalRegistry" }
+    }
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function (err, actual) {
+    test.equal(actual.length, 1, 'the document should be pushed');
+    test.equal(stats.badRecordCount, 0, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream rejects parent without name property', function (test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    popularity: '500',
+    parent_json: {
+      country: { id: "NOR" },
+    }
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function (err, actual) {
+    test.equal(actual.length, 0, 'the document should be rejected');
+    test.equal(stats.badRecordCount, 1, 'bad record count unchanged');
+    test.end();
+  });
+});
+
+tape('documentStream rejects parent without id property', function (test) {
+  const input = {
+    LAT: 5,
+    LON: 6,
+    popularity: '500',
+    parent_json: {
+      country: { name: "NOR" },
+    }
+  };
+  const stats = { badRecordCount: 0 };
+  const documentStream = DocumentStream.create('prefix', stats);
+
+  test_stream([input], documentStream, function (err, actual) {
+    test.equal(actual.length, 0, 'the document should be rejected');
+    test.equal(stats.badRecordCount, 1, 'bad record count unchanged');
+    test.end();
+  });
+});
