@@ -10,7 +10,7 @@ ENV WORKDIR /code/pelias/csv-importer
 WORKDIR ${WORKDIR}
 
 # copy package.json first to prevent npm install being rerun when only code changes
-COPY ./package.json ${WORK}
+COPY ./package.json ${WORKDIR}
 RUN npm install
 
 # copy code into image
