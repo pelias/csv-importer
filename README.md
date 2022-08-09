@@ -132,6 +132,48 @@ Popularity values can be specified to mark records as more important than others
 
 Category values can be added to a record. For a single category, use the `category` field. For multiple categories, use `category_json`, with the same formatting as for alias names.
 
+## Parent
+
+Parent information for record can be added using the `parent_json` field.
+
+Only the valid parent field names specified in the `pelias/model` are supported, records with parent containing unsupported fields names will be ignored with a warning in the logs and will not be imported.
+
+[List of valid fields in pelias/model](https://github.com/pelias/model/blob/master/Document.js), which eventually should match the [list of valid fields in pelias/schema](https://github.com/pelias/schema/blob/master/mappings/document.js).
+
+The contents of the `parent_json` field must be a valid JSON object. An example of the valid contents of `parent_json` field are:
+
+```
+    {
+	"county": [{
+		"id": "34",
+		"name": "Innlandet",
+		"abbr": "InL",
+		"source": "OSM",
+	}],
+	"country": [{
+		"id": "NOR",
+		"name": "Norway"
+		"abbr": "NO"
+	}],
+	"locality": [{
+		"id": "3403",
+		"name": "Hamar"
+		"source": "SomeSource"
+	}]
+    }
+```
+
+In CSV files, records that contain commas must be quoted using double quotes, and records with a double quote in the value itself must be double-double-quoted, as shown below in the example for the `parent_json` field.
+
+```
+"{""county"":[{""id"":""34"",""name"":""Innlandet""}],""country"":[{""id"":""NOR"",""name"":""NO""}],""locality"":[{""id"":""3403"",""name"":""Hamar""}]}"
+```
+
+The valid properties for any parent field are `id`, `name`, `abbr` (abbreviation), `source`, where `id` and `name` are mandatory fields. 
+Any other fields will be ignored without any warning. In case the mandatory fields are missing the record will be ignored with the warning in the logs and will not be imported.
+
+In the case where multiple parent values are provided for the same field name, we store all copies in the elastic index, making them all searchable, but only the first entry is used for displaying the label.
+
 ## Custom data
 
 Arbitrary custom data that does not fit into the standard Pelias schema can be stored for later retrieval under the `addendum` property.
